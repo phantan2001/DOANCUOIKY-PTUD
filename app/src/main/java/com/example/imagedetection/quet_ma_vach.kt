@@ -1,35 +1,12 @@
 package com.example.imagedetection
 
-import android.annotation.SuppressLint
-import android.app.Activity
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
-import android.hardware.camera2.CameraAccessException
-import android.hardware.camera2.CameraCharacteristics
-import android.hardware.camera2.CameraManager
-import android.media.Image
-import android.net.Uri
-import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.provider.MediaStore
-import android.util.SparseIntArray
-import android.view.Surface
-import android.widget.ImageButton
 import android.widget.Toast
-import androidx.annotation.RequiresApi
-import androidx.camera.core.ImageAnalysis
-import androidx.camera.core.ImageProxy
-import com.google.mlkit.vision.barcode.Barcode
-import com.google.mlkit.vision.barcode.BarcodeScannerOptions
-import com.google.mlkit.vision.barcode.BarcodeScanning
-import com.google.mlkit.vision.common.InputImage
-import kotlinx.android.synthetic.main.activity_dich_van_ban.*
-import kotlinx.android.synthetic.main.activity_quet_ma_vach.*
-import java.io.IOException
-import java.nio.ByteBuffer
-import android.graphics.drawable.Animatable
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
@@ -40,10 +17,8 @@ import androidx.cardview.widget.CardView
 import com.google.zxing.integration.android.IntentIntegrator
 import com.journeyapps.barcodescanner.CaptureActivity
 import org.json.JSONException
-import org.w3c.dom.Text
 import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions
-import java.util.jar.Manifest
 
 class quet_ma_vach : AppCompatActivity(), EasyPermissions.PermissionCallbacks,
     EasyPermissions.RationaleCallbacks {
@@ -98,9 +73,10 @@ class quet_ma_vach : AppCompatActivity(), EasyPermissions.PermissionCallbacks,
             if (edtCode!!.text.toString().isNullOrEmpty()) {
                 Toast.makeText(this, "Please enter code", Toast.LENGTH_SHORT).show()
             } else {
-                var value = edtCode!!.text.toString()
+                var value = "coppy: " +  edtCode!!.text.toString()
 
                 Toast.makeText(this, value, Toast.LENGTH_SHORT).show()
+                copyText(edtCode!!.text.toString())
 
             }
         }
@@ -114,6 +90,12 @@ class quet_ma_vach : AppCompatActivity(), EasyPermissions.PermissionCallbacks,
             tvText!!.setText("Enter QR Code Here")
         }
 
+    }
+
+    fun copyText(text:String){
+        val Clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val Clip = ClipData.newPlainText("copy text", text)
+        Clipboard.setPrimaryClip(Clip)
     }
 
     private fun hasCameraAccess(): Boolean {
